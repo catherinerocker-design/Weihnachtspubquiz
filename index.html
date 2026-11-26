@@ -4,13 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Weihnachts-Pubquiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0f2a1d;--card:#173d2a;--acc:#e0b84c;--red:#c0392b;--ok:#2e8b57;--txt:#f5f1e6}
+:root{--fh:'Nunito',system-ui,'Segoe UI',Arial,sans-serif;--fb:'Nunito',system-ui,'Segoe UI',Arial,sans-serif;--bg:#0f2a1d;--card:#173d2a;--acc:#e0b84c;--red:#c0392b;--ok:#2e8b57;--txt:#f5f1e6}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:17px}
+body{margin:0;font-family:var(--fb);background-color:var(--bg);background-image:url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23e0b84c%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20opacity%3D%220.09%22%3E%3Cline%20x1%3D%2213.0%22%20y1%3D%2226.0%22%20x2%3D%2235.0%22%20y2%3D%2226.0%22/%3E%3Cline%20x1%3D%2218.5%22%20y1%3D%2216.5%22%20x2%3D%2229.5%22%20y2%3D%2235.5%22/%3E%3Cline%20x1%3D%2229.5%22%20y1%3D%2216.5%22%20x2%3D%2218.5%22%20y2%3D%2235.5%22/%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2226%22%20r%3D%222%22/%3E%3Cpolygon%20points%3D%22112.0%2C23.0%20114.9%2C30.0%20122.5%2C30.6%20116.8%2C35.5%20118.5%2C42.9%20112.0%2C39.0%20105.5%2C42.9%20107.2%2C35.5%20101.5%2C30.6%20109.1%2C30.0%22/%3E%3Cpath%20d%3D%22M80%2092%20L66%20114%20L94%20114%20Z%20M80%20104%20L62%20128%20L98%20128%20Z%22/%3E%3Cline%20x1%3D%2280%22%20y1%3D%22128%22%20x2%3D%2280%22%20y2%3D%22136%22/%3E%3Cline%20x1%3D%22124.0%22%20y1%3D%22112.0%22%20x2%3D%22140.0%22%20y2%3D%22112.0%22/%3E%3Cline%20x1%3D%22128.0%22%20y1%3D%22105.1%22%20x2%3D%22136.0%22%20y2%3D%22118.9%22/%3E%3Cline%20x1%3D%22136.0%22%20y1%3D%22105.1%22%20x2%3D%22128.0%22%20y2%3D%22118.9%22/%3E%3Ccircle%20cx%3D%22132%22%20cy%3D%22112%22%20r%3D%222%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2296%22%20r%3D%224%22/%3E%3Ccircle%20cx%3D%2248%22%20cy%3D%22146%22%20r%3D%222.5%22/%3E%3Cpath%20d%3D%22M120%20142%20h18%20v12%20h-18%20z%20M129%20142%20v12%20M120%20148%20h18%22/%3E%3C/g%3E%3C/svg%3E"),radial-gradient(ellipse at top,#1d5238 0%,#0f2a1d 65%);background-attachment:scroll,fixed;color:var(--txt);font-size:17px}
 #app{max-width:1100px;margin:0 auto;padding:14px}
-h1,h2,h3{color:var(--acc);margin:.4em 0}
-.card{background:var(--card);border-radius:12px;padding:14px;margin:10px 0}
+h1,h2,h3{font-family:var(--fh);font-weight:800;color:var(--acc);margin:.4em 0;text-shadow:0 2px 6px #0006}
+h1,h2,h3{text-align:center;text-wrap:balance}
+h1{font-size:2em}h2{font-size:1.7em}h3{font-size:1.4em}
+.status{font-family:var(--fh);font-weight:800;font-size:1.5em;color:var(--acc);text-align:center;line-height:1.2;margin:.3em 0}
+.status-sub{text-align:center;opacity:.85}
+.card{background:#173d2add;border:1px solid #2d5a43;border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 4px 14px #0004}
 button{background:var(--acc);color:#222;border:0;border-radius:10px;padding:12px 18px;font-size:1em;font-weight:700;cursor:pointer;margin:4px 2px}
 button.sec{background:#2d5a43;color:var(--txt)}
 button.danger{background:var(--red);color:#fff}
@@ -29,12 +35,12 @@ td.good{background:#1f6b45}td.bad{background:#7a2a22}td.none{background:#333;col
 .me{background:#3b5d2a}
 .big{font-size:2em;text-align:center;font-weight:800}
 .steps{display:flex;gap:6px;margin:8px 0}
-.step{flex:1;text-align:center;padding:10px 6px;border-radius:10px;background:#0c1f15;border:2px solid #2d5a43;opacity:.55;font-weight:700}
+.step{font-family:var(--fh);font-size:1em;flex:1;text-align:center;padding:10px 6px;border-radius:10px;background:#0c1f15;border:2px solid #2d5a43;opacity:.55;font-weight:700}
 .step small{display:block;font-weight:400;color:var(--acc)}
 .step.past{opacity:.8;background:#1f6b45}
 .step.now{opacity:1;border-color:var(--acc);background:#1f4d36}
 .live{position:sticky;top:0;z-index:5;background:#0c1f15;border:2px solid var(--acc);border-radius:12px;padding:8px;margin:8px 0;text-align:center}
-.qr img{width:min(55vh,90%);image-rendering:pixelated;background:#fff;padding:10px;border-radius:8px}
+.qr img{width:min(55vh,90%,520px);height:auto!important;aspect-ratio:1/1;object-fit:contain;image-rendering:pixelated;background:#fff;padding:12px;border-radius:10px}
 .center{text-align:center}
 small{opacity:.8}
 .err{background:#7a2a22;border-radius:10px;padding:12px;margin:10px 0}
@@ -43,18 +49,65 @@ small{opacity:.8}
 @keyframes slidein{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
 @keyframes rise{from{transform:translateY(120px) scale(.6);opacity:0}to{transform:none;opacity:1}}
 @keyframes fall{from{transform:translateY(-10vh) rotate(0)}to{transform:translateY(110vh) rotate(720deg)}}
+@keyframes blink{0%,100%{box-shadow:0 0 0 0 #e0b84c00;filter:brightness(1)}50%{box-shadow:0 0 26px 8px #e0b84cd0;filter:brightness(1.35)}}
+@keyframes blinkbg{0%,100%{background-color:transparent}50%{background-color:#e0b84c66}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 tr.anim{animation:slidein .6s both;animation-delay:var(--d,0s)}
-.podium{display:flex;gap:10px;justify-content:center;align-items:flex-end;min-height:300px}
-.pod{background:var(--card);border:3px solid var(--acc);border-radius:12px;padding:16px;text-align:center;min-width:170px}
+.podium{display:flex;gap:6px;justify-content:center;align-items:flex-end;min-height:300px;padding-top:56px}
+.pod{position:relative;background:var(--card);border:3px solid var(--acc);border-radius:12px;padding:12px 4px;text-align:center;flex:1 1 0;min-width:0;max-width:240px}
+.pod .hat{position:absolute;top:-52px;left:50%;width:88px;margin-left:-44px;transform:rotate(-6deg);z-index:3}
 .pod.new{animation:rise .9s both}
-.pod.p1{min-height:260px;padding-top:34px}
-.pod.p1.new{animation-name:rise,pulse;animation-duration:.9s,1.6s;animation-delay:0s,1s;animation-iteration-count:1,3}
+.pod.p1{min-height:260px;padding-top:34px;animation:blink 1.2s ease-in-out infinite}
+.pod.p1.new{animation:rise .9s both,blink 1.2s ease-in-out .9s infinite}
 .pod.p2{min-height:210px}.pod.p3{min-height:170px}
-.pod .n{font-size:2.6em}.pod .t{font-size:1.5em;font-weight:800;word-break:break-word}
+.pod .n{font-size:clamp(1.8rem,9vw,2.6rem)}.pod .t{font-family:var(--fh);font-size:clamp(1.05rem,5vw,1.5rem);font-weight:800;overflow-wrap:anywhere}
 .pod.ghost{opacity:.25;animation:none;border-style:dashed}
 .confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:50}
 .confetti span{position:absolute;top:0;font-size:1.6em;animation:fall linear both}
+/* Ranglisten ohne Tabelle (passt auf jedes Handy) */
+.rl{display:grid;grid-template-columns:2.4em 1fr auto;gap:8px;align-items:center;padding:8px 6px;border-bottom:1px solid #2d5a43;animation:slidein .6s both;animation-delay:var(--d,0s)}
+.rl .rk{font-family:var(--fh);font-weight:800;font-size:1.4em;color:var(--acc)}
+.rl .nm{min-width:0;overflow-wrap:anywhere;font-weight:700}
+.rl .nm small{display:block;font-weight:400}
+.rl .tt{font-size:1.4em;font-weight:800}
+.rl.me{background:#3b5d2a;border-radius:8px}
+.winner{font-family:var(--fh);font-weight:800;font-size:1.8em;color:var(--acc);border:3px solid var(--acc);border-radius:12px;padding:12px;margin:10px 0;animation:rise .9s both;overflow-wrap:anywhere}
+/* Rundenergebnis auf dem Handy */
+.place{position:relative;text-align:center;margin-top:60px;border:3px solid var(--acc)}
+.place .hat{position:absolute;top:-58px;left:50%;width:96px;margin-left:-48px;transform:rotate(-6deg)}
+.place .n{font-size:3em;animation:pulse 1.4s 3}
+.place.first{animation:blink 1.2s ease-in-out infinite}
+.rl.first{animation:slidein .6s both,blinkbg 1.2s ease-in-out infinite;animation-delay:var(--d,0s),calc(var(--d,0s) + .6s);border-radius:8px}
+tr.first td{animation:blinkbg 1.2s ease-in-out 1.5s infinite}
+.pts .num{font-family:var(--fh);font-weight:800;font-size:3.4em;color:var(--acc);line-height:1}
+/* Warte-Animation: Lichterkette + Weihnachtsbaum */
+@keyframes pop{0%{transform:scale(0) translateY(-16px);opacity:0}70%{transform:scale(1.25);opacity:1}100%{transform:none;opacity:1}}
+@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes gon{from{opacity:.12}to{opacity:1}}
+@keyframes starin{0%{transform:scale(0) rotate(-200deg);opacity:0}100%{transform:none;opacity:1}}
+@keyframes sway{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
+.garland{width:100%;height:auto;display:block}
+.gb{opacity:.12;animation:gon .5s ease-out both,twinkle 2.2s ease-in-out infinite;animation-delay:var(--d),calc(var(--d) + .5s);filter:drop-shadow(0 0 4px currentColor)}
+.tree{width:min(260px,70%);height:auto;display:block;margin:6px auto}
+.orn{transform-box:fill-box;transform-origin:center;animation:pop .6s ease-out both;animation-delay:var(--d)}
+.bulb{transform-box:fill-box;transform-origin:center;animation:pop .5s ease-out both,twinkle 1.8s ease-in-out infinite;animation-delay:var(--d),calc(var(--d) + .6s);filter:drop-shadow(0 0 3px #ffe9a0)}
+.tstar{transform-box:fill-box;transform-origin:center;animation:starin 1s ease-out both;animation-delay:var(--d);filter:drop-shadow(0 0 6px #e0b84c)}
+.tgreen{opacity:0;animation:gon .5s ease-out both;animation-delay:var(--d)}
+/* Weitere Warte-Szenen */
+@keyframes fly{0%{transform:translate(-190px,16px)}50%{transform:translate(95px,-6px)}100%{transform:translate(330px,14px)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes swing{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+@keyframes noteup{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-70px);opacity:0}}
+@keyframes snowfall{from{transform:translateY(-10px)}to{transform:translateY(250px)}}
+@keyframes nose{0%,100%{opacity:1}50%{opacity:.4}}
+.scene{width:min(300px,86%);height:auto;display:block;margin:6px auto}
+.sleighgrp{animation:fly 7s linear infinite}
+.sleighgrp>g{animation:bob 1.3s ease-in-out infinite}
+.rnose{animation:nose 1s ease-in-out infinite;filter:drop-shadow(0 0 4px #c0392b)}
+.bell{transform-box:fill-box;transform-origin:50% 0;animation:swing 1.4s ease-in-out infinite;animation-delay:var(--d)}
+.note{font-size:16px;fill:#e0b84c;opacity:0;animation:noteup 3s ease-out infinite;animation-delay:var(--d)}
+.flk{fill:#f5f1e6;opacity:.8;animation:snowfall 5s linear infinite;animation-delay:var(--d)}
+.sm{transform-box:fill-box;transform-origin:center bottom;animation:pop .6s ease-out both;animation-delay:var(--d)}
 /* Demo-Launcher */
 .dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .dgrid iframe,.dhost iframe{width:100%;border:2px solid var(--acc);border-radius:10px;background:var(--bg)}
@@ -84,6 +137,8 @@ const firebaseConfig = {
   messagingSenderId: "327367286543",
   appId: "1:327367286543:web:4849577a7941729508287a"
 };
+/* =============================================================================== */
+
 const SRC = '<!DOCTYPE html>' + document.documentElement.outerHTML; // für den Demo-Launcher
 const ROUNDS = [
   {t:'Fragerunde 1', type:'q', label:'Frage'},
@@ -232,12 +287,121 @@ function rankTable(upTo, meId, withBonus){
   rows.forEach((x,i)=>{
     // Animation: von unten nach oben einblenden, Platz 1 zuletzt
     const d = ((rows.length-1-i)*0.35).toFixed(2);
-    h += `<tr class="anim ${x.id===meId?'me':''}" style="--d:${d}s"><td>${x.rank}.</td><td>${esc(x.name)}</td>`;
+    h += `<tr class="anim ${x.id===meId?'me':''}${x.rank===1?' first':''}" style="--d:${d}s"><td>${x.rank}.</td><td>${esc(x.name)}</td>`;
     for(let r=1;r<=upTo;r++) h += `<td>${x.per[r-1]}</td>`;
     if(withBonus) h += `<td>${x.bonus?'🎅 +'+x.bonus:'–'}</td>`;
     h += `<td><b>${x.total}</b></td></tr>`;
   });
   return h + '</table>';
+}
+const MEDAL = ['','🥇','🥈','🥉'];
+function hatSvg(){
+  return `<svg class="hat" viewBox="0 0 120 90" aria-hidden="true"><path d="M14 70 C18 28 56 6 96 14 C86 30 100 50 108 70 Z" fill="#c0392b"/><path d="M30 40 C45 24 66 16 84 16" stroke="#e0584a" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/><rect x="6" y="62" width="108" height="22" rx="11" fill="#f5f1e6"/><circle cx="98" cy="14" r="11" fill="#f5f1e6"/></svg>`;
+}
+function roundPlaces(r){
+  // Platz nach aufsummierten Punkten (Runde 1 bis r)
+  const list = ranking(r).map(x=>({id:x.id, name:x.name, pts:x.per[r-1], total:x.total, rank:x.rank}));
+  list.forEach(x=>{ x.place = (x.total>0 && x.rank<=3) ? x.rank : 0; });
+  return list;
+}
+function roundResultHtml(r, meId){
+  const me = roundPlaces(r).find(x=>x.id===meId) || {pts:0, total:0, place:0};
+  let h = '';
+  if(me.place){
+    const txt = me.place===1 ? 'Ihr führt das Feld an!' : 'Ihr liegt auf Platz '+me.place+'!';
+    h += confetti('round') + `<div class="card place${me.place===1?' first':''}">${me.place===1?hatSvg():''}<div class="n">${MEDAL[me.place]}</div><div class="status">${txt}</div><div class="status-sub">Zwischenstand nach ${ROUNDS[r-1].t}</div></div>`;
+  }
+  h += `<div class="card center pts"><div class="num">${me.total}</div><div>${me.total===1?'Punkt':'Punkte'} insgesamt</div>
+    <p>Davon in dieser Runde: <b>${me.pts}</b> ${me.pts===1?'Punkt':'Punkte'}</p>${me.place?'':'<p class="status-sub">Weiter so – es ist noch alles drin! 💪</p>'}</div>`;
+  return h;
+}
+function rankList(upTo, meId, withBonus){
+  const rows = ranking(upTo, withBonus);
+  return rows.map((x,i)=>{
+    const d = ((rows.length-1-i)*0.35).toFixed(2);
+    const parts = []; for(let r=1;r<=upTo;r++) parts.push('R'+r+': '+x.per[r-1]);
+    if(withBonus && x.bonus) parts.push('🎅 Bonus +'+x.bonus);
+    return `<div class="rl ${x.id===meId?'me':''}${x.rank===1?' first':''}" style="--d:${d}s"><div class="rk">${x.rank}.</div><div class="nm">${esc(x.name)}<small>${parts.join(' · ')}</small></div><div class="tt">${x.total}</div></div>`;
+  }).join('');
+}
+function garlandHtml(){
+  const W=300, n=14, cols=['#c0392b','#e0b84c','#2eb872','#f5f1e6'];
+  let pts=[], bulbs='';
+  for(let i=0;i<=60;i++){ const x=i*W/60, y=12+7*Math.sin(x/W*Math.PI*6); pts.push(x.toFixed(1)+','+y.toFixed(1)); }
+  for(let i=0;i<n;i++){
+    const x=(i+.5)*W/n, y=12+7*Math.sin(x/W*Math.PI*6), c=cols[i%cols.length];
+    bulbs += `<g class="gb" style="--d:${(i*0.3).toFixed(2)}s;color:${c}"><line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x.toFixed(1)}" y2="${(y+4).toFixed(1)}" stroke="#7a8a7f" stroke-width="1.5"/><ellipse cx="${x.toFixed(1)}" cy="${(y+10).toFixed(1)}" rx="4.2" ry="6" fill="${c}"/></g>`;
+  }
+  return `<svg class="garland" viewBox="0 0 ${W} 36" aria-hidden="true"><polyline points="${pts.join(' ')}" fill="none" stroke="#7a8a7f" stroke-width="1.5"/>${bulbs}</svg>`;
+}
+function treeHtml(){
+  const orn=[[88,95,'#c0392b'],[113,100,'#e0b84c'],[80,128,'#e0b84c'],[120,125,'#f5f1e6'],[100,145,'#c0392b'],[62,185,'#f5f1e6'],[95,172,'#e0b84c'],[135,180,'#c0392b'],[78,200,'#c0392b'],[118,203,'#e0b84c']];
+  const lit=[[100,62],[78,112],[126,140],[66,152],[145,170],[48,200],[155,200],[100,195],[110,118],[86,160]];
+  const t0 = 0.4;
+  let h = `<svg class="tree" viewBox="0 0 200 250" aria-hidden="true">
+    <rect x="88" y="205" width="24" height="30" rx="3" fill="#7a4a2b"/>
+    <polygon class="tgreen" style="--d:${t0}s" points="100,105 25,210 175,210" fill="#1f6b45"/>
+    <polygon class="tgreen" style="--d:${t0+.3}s" points="100,70 40,150 160,150" fill="#2e8b57"/>
+    <polygon class="tgreen" style="--d:${t0+.6}s" points="100,40 55,105 145,105" fill="#3a9d68"/>`;
+  orn.forEach((o,i)=>{ h += `<circle class="orn" style="--d:${(1.4+i*0.55).toFixed(2)}s" cx="${o[0]}" cy="${o[1]}" r="6.5" fill="${o[2]}" stroke="#0004" stroke-width="1"/>`; });
+  const tl = 1.4+orn.length*0.55;
+  lit.forEach((p,i)=>{ h += `<circle class="bulb" style="--d:${(tl+i*0.25).toFixed(2)}s" cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#fff3b0"/>`; });
+  const ts = tl+lit.length*0.25+0.2;
+  h += `<polygon class="tstar" style="--d:${ts.toFixed(2)}s" fill="#e0b84c" points="100,14 105,27 119,27 108,35 112,49 100,41 88,49 92,35 81,27 95,27"/></svg>`;
+  return h;
+}
+function snowmanHtml(){
+  let h=`<svg class="tree" viewBox="0 0 200 250" aria-hidden="true">`;
+  for(let i=0;i<9;i++) h+=`<circle class="flk" style="--d:${(i*0.55).toFixed(2)}s" cx="${15+i*21}" cy="${(i%3)*14+4}" r="${2+(i%3)}"/>`;
+  h+=`<ellipse cx="100" cy="236" rx="90" ry="12" fill="#f5f1e6" opacity=".9"/>
+    <circle class="sm" style="--d:.3s" cx="100" cy="192" r="44" fill="#f5f1e6" stroke="#0003" stroke-width="1.5"/>
+    <circle class="sm" style="--d:1.1s" cx="100" cy="135" r="32" fill="#f5f1e6" stroke="#0003" stroke-width="1.5"/>
+    <circle class="sm" style="--d:1.9s" cx="100" cy="88" r="23" fill="#f5f1e6" stroke="#0003" stroke-width="1.5"/>
+    <g class="sm" style="--d:2.6s"><line x1="70" y1="130" x2="34" y2="108" stroke="#7a4a2b" stroke-width="4" stroke-linecap="round"/><line x1="130" y1="130" x2="166" y2="108" stroke="#7a4a2b" stroke-width="4" stroke-linecap="round"/></g>
+    <circle class="sm" style="--d:3.2s" cx="92" cy="82" r="3" fill="#222"/><circle class="sm" style="--d:3.4s" cx="108" cy="82" r="3" fill="#222"/>
+    <polygon class="sm" style="--d:3.8s" points="100,90 124,95 100,99" fill="#e0b84c"/>
+    <g class="sm" style="--d:4.2s"><circle cx="100" cy="125" r="3.4" fill="#c0392b"/><circle cx="100" cy="140" r="3.4" fill="#c0392b"/><circle cx="100" cy="155" r="3.4" fill="#c0392b"/></g>
+    <g class="sm" style="--d:4.8s"><rect x="76" y="104" width="48" height="10" rx="5" fill="#c0392b"/><rect x="114" y="108" width="10" height="26" rx="4" fill="#c0392b"/></g>
+    <g class="sm" style="--d:5.5s"><rect x="76" y="58" width="48" height="8" rx="3" fill="#e0b84c"/><rect x="82" y="30" width="36" height="30" rx="3" fill="#1f6b45"/><rect x="82" y="50" width="36" height="6" fill="#e0b84c"/></g>
+  </svg>`;
+  return h;
+}
+function sleighHtml(){
+  let h=`<svg class="scene" viewBox="0 0 300 150" aria-hidden="true">`;
+  [[20,20],[60,50],[110,15],[170,40],[220,18],[262,52],[285,24],[140,70],[40,90],[240,95]].forEach((p,i)=>{
+    h+=`<circle class="gb" style="--d:${(i*0.35).toFixed(2)}s;color:#fff3b0" cx="${p[0]}" cy="${p[1]}" r="${i%3?1.6:2.4}" fill="#fff3b0"/>`;
+  });
+  h+=`<path d="M0 138 Q75 118 150 134 T300 130 L300 150 L0 150Z" fill="#f5f1e6" opacity=".9"/>
+  <g class="sleighgrp"><g>
+    <path d="M118 78 L128 78 M132 80 L170 80" stroke="#7a4a2b" stroke-width="1.4"/>
+    <g transform="translate(2,0)"><ellipse cx="200" cy="70" rx="22" ry="11" fill="#7a4a2b"/><circle cx="224" cy="58" r="8" fill="#7a4a2b"/>
+      <path d="M226 50 L232 38 M230 46 L238 42 M222 50 L220 38 M221 44 L214 41" stroke="#e0b84c" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <circle class="rnose" cx="232" cy="60" r="3.2" fill="#c0392b"/>
+      <path d="M188 78 L184 96 M196 80 L198 98 M208 80 L212 96 M216 78 L224 92" stroke="#7a4a2b" stroke-width="3" stroke-linecap="round"/></g>
+    <g transform="translate(-48,2)"><ellipse cx="200" cy="70" rx="22" ry="11" fill="#7a4a2b"/><circle cx="224" cy="58" r="8" fill="#7a4a2b"/>
+      <path d="M226 50 L232 38 M230 46 L238 42 M222 50 L220 38 M221 44 L214 41" stroke="#e0b84c" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M188 78 L184 96 M196 80 L198 98 M208 80 L212 96 M216 78 L224 92" stroke="#7a4a2b" stroke-width="3" stroke-linecap="round"/></g>
+    <path d="M60 60 Q60 92 84 92 L128 92 Q120 70 126 56 Z" fill="#c0392b"/>
+    <path d="M52 100 Q92 104 132 98 Q140 96 138 86" stroke="#e0b84c" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <line x1="72" y1="94" x2="72" y2="100" stroke="#e0b84c" stroke-width="3"/><line x1="112" y1="94" x2="112" y2="99" stroke="#e0b84c" stroke-width="3"/>
+    <circle cx="88" cy="52" r="15" fill="#2e8b57"/><rect x="82" y="38" width="12" height="6" rx="2" fill="#e0b84c"/>
+    <rect x="102" y="46" width="14" height="14" rx="2" fill="#e0b84c"/><line x1="109" y1="46" x2="109" y2="60" stroke="#c0392b" stroke-width="2"/>
+  </g></g></svg>`;
+  return h;
+}
+function bellsHtml(){
+  const bell=(x,d,sz)=>`<g transform="translate(${x},40) scale(${sz})"><g class="bell" style="--d:${d}s"><line x1="0" y1="-30" x2="0" y2="0" stroke="#7a8a7f" stroke-width="2"/><path d="M-26 52 Q-24 8 0 4 Q24 8 26 52 Q0 60 -26 52Z" fill="#e0b84c" stroke="#0003" stroke-width="1.5"/><path d="M-18 48 Q-16 18 -2 12" stroke="#fff3b0" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/><circle cx="0" cy="58" r="6" fill="#b9962f"/></g></g>`;
+  let h=`<svg class="scene" viewBox="0 0 300 150" aria-hidden="true">
+    <path d="M30 28 Q150 6 270 28" stroke="#2e8b57" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+  [[60,24],[105,17],[150,15],[195,17],[240,24]].forEach(p=>{ h+=`<ellipse cx="${p[0]}" cy="${p[1]}" rx="9" ry="4.5" fill="#2e8b57" transform="rotate(-20 ${p[0]} ${p[1]})"/>`; });
+  [[88,22],[172,17],[212,20]].forEach(p=>{ h+=`<circle cx="${p[0]}" cy="${p[1]}" r="3.6" fill="#c0392b"/>`; });
+  h+=bell(105,0,1)+bell(195,.7,1);
+  [[60,110,0],[150,125,.8],[240,108,1.6],[100,128,2.2],[200,128,.4]].forEach((n,i)=>{ h+=`<text class="note" style="--d:${n[2]}s" x="${n[0]}" y="${n[1]}">${i%2?'♫':'♪'}</text>`; });
+  return h+'</svg>';
+}
+function waitCard(msg, sub, round){
+  const scene = [treeHtml, snowmanHtml, sleighHtml, bellsHtml][(round||1)-1]();
+  return `<div class="card center">${garlandHtml()}${scene}<div class="status">${msg}</div>${sub?`<div class="status-sub">${sub}</div>`:''}</div>`;
 }
 function stepper(cur, phase){
   return '<div class="steps">'+ROUNDS.map((R,i)=>{
@@ -250,9 +414,12 @@ function qrHtml(url){
   const q = qrcode(0,'M'); q.addData(url); q.make();
   return `<div class="qr center">${q.createImgTag(8,4)}</div>`;
 }
-function confetti(){
-  const e=['🎉','🎄','⭐','🎁','❄️','✨']; let h='<div class="confetti">';
-  for(let i=0;i<45;i++) h+=`<span style="left:${Math.random()*100}%;animation-duration:${(3+Math.random()*3).toFixed(1)}s;animation-delay:${(Math.random()*2).toFixed(1)}s">${e[i%e.length]}</span>`;
+function confetti(kind){
+  // Runden & Bonus: nur 1–2 Emojis · Finale: alle
+  const SETS={round:['⭐','❄️'], bonus:['🎅','🎁'], final:['🎅','🎄','⭐','🎁','❄️','✨']};
+  const e=SETS[kind]||SETS.round, n=kind==='final'?90:60, spread=kind==='final'?14:10;
+  let h='<div class="confetti">';
+  for(let i=0;i<n;i++) h+=`<span style="left:${(Math.random()*100).toFixed(1)}%;animation-duration:${(4+Math.random()*3.5).toFixed(1)}s;animation-delay:${(Math.random()*spread).toFixed(1)}s">${e[i%e.length]}</span>`;
   return h+'</div>';
 }
 
@@ -262,20 +429,20 @@ const setState = o => base.child('state').update(o);
 /* ================= SPIELER ================= */
 window.joinTeam = function(){
   const name = document.getElementById('tn').value.trim();
-  if(!name) return alert('Bitte einen Gruppennamen eingeben.');
+  if(!name) return alert('Bitte gebt einen Gruppennamen ein.');
   const ex = Object.entries(teams()).find(([id,t])=>t.name.toLowerCase()===name.toLowerCase());
   if(ex){
-    if(!confirm('Diese Gruppe gibt es schon. Wieder einsteigen? (Bisherige Antworten bleiben erhalten.)')) return;
+    if(!confirm('Diese Gruppe gibt es schon. Wollt ihr wieder einsteigen? (Eure bisherigen Antworten bleiben erhalten.)')) return;
     return rejoin(ex[0]);
   }
   const ref = base.child('teams').push({name, joined: Date.now()});
   myId = ref.key; LS.set(TKEY, myId); lastKey=null;
 };
 window.rejoin = function(id){ myId=id; LS.set(TKEY,id); lastKey=null; render(); };
-window.leaveTeam = function(){ if(confirm('Dieses Handy von der Gruppe abmelden? (Antworten bleiben gespeichert, du kannst wieder einsteigen.)')){ LS.del(TKEY); myId=null; lastKey=null; render(); } };
+window.leaveTeam = function(){ if(confirm('Wollt ihr dieses Handy abmelden? (Eure Antworten bleiben gespeichert, ihr könnt jederzeit wieder einsteigen.)')){ LS.del(TKEY); myId=null; lastKey=null; render(); } };
 window.saveAns = function(r,k,v){ if(myId) base.child('answers/'+r+'/'+myId+'/'+k).set(v); };
 window.finishRound = function(r){
-  if(!confirm('Runde wirklich beenden? Danach sind keine Änderungen mehr möglich.')) return;
+  if(!confirm('Wollt ihr die Runde wirklich beenden? Danach könnt ihr nichts mehr ändern.')) return;
   base.child('teams/'+myId+'/done/r'+r).set(true);
 };
 
@@ -286,21 +453,21 @@ function renderPlayer(){
   const T = teams(), ids = Object.keys(T);
   if(!myId){
     key='join'+ids.length;
-    html = `<h1>🎄 Weihnachts-Pubquiz</h1><div class="card"><h3>Neue Gruppe anmelden</h3>
+    html = `<h1>🎄 Weihnachts-Pubquiz</h1><div class="card"><h3>Meldet eure Gruppe an</h3>
       <input id="tn" type="text" maxlength="30" placeholder="Gruppenname"><br><br>
       <button onclick="joinTeam()">Beitreten</button></div>`;
-    if(ids.length) html += `<div class="card"><h3>Verbindung verloren? Wieder einsteigen:</h3>${ids.map(i=>`<button class="sec" onclick="rejoin('${i}')">${esc(T[i].name)}</button>`).join('')}</div>`;
+    if(ids.length) html += `<div class="card"><h3>Verbindung verloren? Steigt hier wieder ein:</h3>${ids.map(i=>`<button class="sec" onclick="rejoin('${i}')">${esc(T[i].name)}</button>`).join('')}</div>`;
   } else if(s.phase==='lobby'){
     key='lobby';
-    html = `<h1>🎄 Hallo ${esc(t.name)}!</h1><div class="card center"><p>Du bist dabei. Warte, bis das Quiz startet …</p></div><button class="sec" onclick="leaveTeam()">Abmelden</button>`;
+    html = `<h1>🎄 Hallo ${esc(t.name)}!</h1><div class="card center">${garlandHtml()}<div class="status">Ihr seid dabei!</div><div class="status-sub">Wartet, bis das Quiz startet …</div></div><button class="sec" onclick="leaveTeam()">Abmelden</button>`;
   } else if(s.phase==='round'){
     const r = s.round, done = t.done && t.done['r'+r];
     key = 'round'+r+(done?'d':'');
     if(done){
-      html = `<h1>${ROUNDS[r-1].t}</h1><div class="card center"><p>✅ Antworten abgegeben.<br>Warte auf die Auswertung …</p></div>`;
+      html = `<h1>${ROUNDS[r-1].t}</h1><div class="card center">${garlandHtml()}<div class="status">🎄 Eure Antworten sind abgegeben</div><div class="status-sub">Wartet auf die Auswertung …</div></div>`;
     } else {
       const mine = (D.answers && D.answers[r] && D.answers[r][myId]) || {};
-      html = `<h1>${ROUNDS[r-1].t}</h1><small>Gruppe: ${esc(t.name)} · Antworten werden automatisch gespeichert.</small>`;
+      html = `<h1>${ROUNDS[r-1].t}</h1><small>Gruppe: ${esc(t.name)} · Eure Antworten werden automatisch gespeichert.</small>`;
       fields(r).forEach(f=>{
         html += `<div class="row"><label>${esc(f.label)}</label><input type="text" value="${esc(mine[f.k]||'')}"
           oninput="saveAns(${r},'${f.k}',this.value)" autocomplete="off"></div>`;
@@ -309,16 +476,16 @@ function renderPlayer(){
     }
   } else if(s.phase==='eval' || (s.phase==='ranking' && !s.shared)){
     key='eval'+s.round;
-    html = `<h1>${ROUNDS[s.round-1].t}</h1><div class="card center"><p>Die Quizmasterin wertet gerade aus … 📝</p></div>`;
+    html = `<h1>${ROUNDS[s.round-1].t}</h1>` + waitCard('Die Quizmasterin wertet aus …','Gleich erfahrt ihr, wie ihr abgeschnitten habt 🎁', s.round);
   } else if(s.phase==='ranking'){
     key='rank'+s.round;
-    html = `<h1>Zwischenstand nach ${ROUNDS[s.round-1].t}</h1><div class="card">${rankTable(s.round,myId)}</div>`;
+    html = `<h1>Ergebnis: ${ROUNDS[s.round-1].t}</h1>` + roundResultHtml(s.round, myId);
   } else if(s.phase==='bonus'){
     const bt = s.bonusShared && D.bonus && teams()[D.bonus];
     key='bonus'+(bt?D.bonus:'');
     html = bt
-      ? `<h1>🎅 Bester Gruppenname</h1><div class="card center"><p>Der Bonus (+${BONUS_PTS} Punkte) geht an:</p><div class="big pod new">${esc(bt.name)}</div>${D.bonus===myId?'<p>🎉 Das seid ihr!</p>':''}<p><small>Das Gesamtergebnis folgt gleich …</small></p></div>`
-      : `<h1>${ROUNDS[3].t}</h1><div class="card center"><p>Die Quizmasterin wertet gerade aus … 📝</p></div>`;
+      ? `<h1>🎅 Bester Gruppenname</h1><div class="card center">${D.bonus===myId?confetti('bonus'):''}<div class="status-sub">Der Bonus (+${BONUS_PTS} Punkte) geht an:</div><div class="winner">${esc(bt.name)}</div>${D.bonus===myId?'<div class="status">🎅 Das seid ihr!</div>':''}<div class="status-sub">Das Gesamtergebnis folgt gleich …</div></div>`
+      : `<h1>${ROUNDS[3].t}</h1>` + waitCard('Die Quizmasterin wertet aus …','Gleich erfahrt ihr, wie ihr abgeschnitten habt 🎁', 4);
   } else {
     key='final'+s.reveal;
     html = `<h1>🏆 Quiz beendet</h1>` + finalHtml(myId);
@@ -340,11 +507,11 @@ function finalHtml(meId){
   let h = '<div class="podium">';
   slots.forEach(({idx,rev,c})=>{
     if(s.reveal>=rev && rk[idx]){
-      h += `<div class="pod ${c}${s.reveal===rev?' new':''}"><div class="n">${medal[idx]}</div><div>Platz ${rk[idx].rank}</div><div class="t">${esc(rk[idx].name)}</div><div>${rk[idx].total} Punkte</div></div>`;
+      h += `<div class="pod ${c}${s.reveal===rev?' new':''}">${idx===0?hatSvg():''}<div class="n">${medal[idx]}</div><div>Platz ${rk[idx].rank}</div><div class="t">${esc(rk[idx].name)}</div><div>${rk[idx].total} Punkte</div></div>`;
     } else h += `<div class="pod ghost ${c}"><div class="n">?</div></div>`;
   });
   h += '</div>';
-  if(s.reveal>=3) h += (s.reveal===3 ? confetti() : '') + `<div class="card">${rankTable(4,meId,true)}</div>`;
+  if(s.reveal>=3) h += (s.reveal===3 ? confetti('final') : '') + `<div class="card">${rankList(4,meId,true)}</div>`;
   return h;
 }
 
@@ -437,14 +604,18 @@ function renderHost(){
   } else if(s.phase==='ranking'){
     const r=s.round;
     h += s.shared
-      ? `<div class="demo" style="background:#1f6b45">✅ Ergebnis ist für die Gruppen sichtbar.</div>`
+      ? `<div class="demo" style="background:#1f6b45">🎄 Ergebnis ist für die Gruppen sichtbar.</div>`
       : `<div class="demo">🔒 Nur für dich sichtbar – die Gruppen sehen noch „Auswertung läuft“.</div><button onclick="hShare()">📢 Ergebnis mit Gruppen teilen</button>`;
     h += `<button class="sec" onclick="hBackToEval()">↩ Zurück zur Auswertung</button>`;
-    h += `<h2>Zwischenstand nach ${ROUNDS[r-1].t}</h2><div class="card">${rankTable(r)}</div>`;
+    const top = roundPlaces(r).filter(x=>x.place);
+    h += `<h2>Zwischenstand nach ${ROUNDS[r-1].t}</h2>`;
+    if(s.shared && top.length) h += confetti('round');
+    h += `<div class="card center"><b>Platzierung nach dieser Runde (aufsummiert):</b> ${top.length ? top.map(x=>MEDAL[x.place]+' '+esc(x.name)+' ('+x.total+')').join(' &nbsp;·&nbsp; ') : 'noch keine Punkte vergeben'}</div>`;
+    h += `<div class="card">${rankTable(r)}</div>`;
     if(s.shared && r<4) h += `<button onclick="hStart(${r+1})">▶ ${ROUNDS[r].t} starten</button>`;
   } else if(s.phase==='bonus'){
     h += `<h2>🎅 Bonus: Bester Gruppenname (+${BONUS_PTS} Punkte)</h2>
-      <div class="demo">${s.bonusShared ? '✅ Entscheidung ist für die Gruppen sichtbar. Das Ergebnis der Liederunde ist noch verborgen.' : '🔒 Nur für dich sichtbar – die Gruppen sehen noch „Auswertung läuft“. Das Ergebnis der Liederunde wird erst im Finale gezeigt.'}</div>
+      <div class="demo">${s.bonusShared ? '🎄 Entscheidung ist für die Gruppen sichtbar. Das Ergebnis der Liederunde ist noch verborgen.' : '🔒 Nur für dich sichtbar – die Gruppen sehen noch „Auswertung läuft“. Das Ergebnis der Liederunde wird erst im Finale gezeigt.'}</div>
       ${s.bonusShared ? '' : `<small>Gruppe anklicken, die den Bonus erhält. Erneut klicken = Auswahl aufheben.</small>
       <div class="card">${ids.map(i=>`<button class="${D.bonus===i?'':'sec'}" onclick="hPickBonus('${i}')">${D.bonus===i?'🎅 ':''}${esc(T[i].name)}</button>`).join('')}</div>`}
       ${s.bonusShared ? `<div class="card center"><h2>🎅 ${esc((T[D.bonus]||{}).name||'')}</h2></div><button onclick="hFinal()">🏁 Quiz beenden & Finale</button>`
