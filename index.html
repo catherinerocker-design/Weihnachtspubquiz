@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weihnachts-Pubquiz</title>
+<style>
+:root{--bg:#0f2a1d;--card:#173d2a;--acc:#e0b84c;--red:#c0392b;--ok:#2e8b57;--txt:#f5f1e6}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:17px}
+#app{max-width:1100px;margin:0 auto;padding:14px}
+h1,h2,h3{color:var(--acc);margin:.4em 0}
+.card{background:var(--card);border-radius:12px;padding:14px;margin:10px 0}
+button{background:var(--acc);color:#222;border:0;border-radius:10px;padding:12px 18px;font-size:1em;font-weight:700;cursor:pointer;margin:4px 2px}
+button.sec{background:#2d5a43;color:var(--txt)}
+button.danger{background:var(--red);color:#fff}
+button:disabled{opacity:.4}
+input[type=text]{width:100%;padding:11px;border-radius:8px;border:2px solid #2d5a43;background:#0c1f15;color:var(--txt);font-size:1em}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0;padding:4px 6px;border-radius:10px;border:2px solid transparent}
+.row label{min-width:90px;font-weight:700}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #2d5a43;padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#0c1f15;position:sticky;top:0}
+td.c{cursor:pointer;min-width:130px}
+td.good{background:#1f6b45}td.bad{background:#7a2a22}td.none{background:#333;color:#aaa}
+.key{font-size:.8em;color:var(--acc)}
+.pill{display:inline-block;background:#2d5a43;border-radius:20px;padding:4px 12px;margin:3px;cursor:default}
+.pill.done{background:var(--ok)}
+.me{background:#3b5d2a}
+.big{font-size:2em;text-align:center;font-weight:800}
+.steps{display:flex;gap:6px;margin:8px 0}
+.step{flex:1;text-align:center;padding:10px 6px;border-radius:10px;background:#0c1f15;border:2px solid #2d5a43;opacity:.55;font-weight:700}
+.step small{display:block;font-weight:400;color:var(--acc)}
+.step.past{opacity:.8;background:#1f6b45}
+.step.now{opacity:1;border-color:var(--acc);background:#1f4d36}
+.live{position:sticky;top:0;z-index:5;background:#0c1f15;border:2px solid var(--acc);border-radius:12px;padding:8px;margin:8px 0;text-align:center}
+.qr img{width:min(55vh,90%);image-rendering:pixelated;background:#fff;padding:10px;border-radius:8px}
+.center{text-align:center}
+small{opacity:.8}
+.err{background:#7a2a22;border-radius:10px;padding:12px;margin:10px 0}
+.demo{background:#5a4a12;border-radius:10px;padding:8px 12px;margin:8px 0;font-size:.9em}
+/* Animationen */
+@keyframes slidein{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
+@keyframes rise{from{transform:translateY(120px) scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes fall{from{transform:translateY(-10vh) rotate(0)}to{transform:translateY(110vh) rotate(720deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+tr.anim{animation:slidein .6s both;animation-delay:var(--d,0s)}
+.podium{display:flex;gap:10px;justify-content:center;align-items:flex-end;min-height:300px}
+.pod{background:var(--card);border:3px solid var(--acc);border-radius:12px;padding:16px;text-align:center;min-width:170px}
+.pod.new{animation:rise .9s both}
+.pod.p1{min-height:260px;padding-top:34px}
+.pod.p1.new{animation-name:rise,pulse;animation-duration:.9s,1.6s;animation-delay:0s,1s;animation-iteration-count:1,3}
+.pod.p2{min-height:210px}.pod.p3{min-height:170px}
+.pod .n{font-size:2.6em}.pod .t{font-size:1.5em;font-weight:800;word-break:break-word}
+.pod.ghost{opacity:.25;animation:none;border-style:dashed}
+.confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:50}
+.confetti span{position:absolute;top:0;font-size:1.6em;animation:fall linear both}
+/* Demo-Launcher */
+.dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dgrid iframe,.dhost iframe{width:100%;border:2px solid var(--acc);border-radius:10px;background:var(--bg)}
+.dgrid iframe,.dhost iframe{height:600px;overflow:hidden}
+.tabs{position:sticky;top:0;z-index:20;background:var(--bg);padding:6px 0;text-align:left}
+.amp{display:flex;gap:6px;margin-top:6px}
+.amp span{width:26px;height:26px;border-radius:50%;border:3px solid #0008;cursor:pointer;opacity:.35;display:inline-block}
+.amp span.on{opacity:1;border-color:#fff}
+.amp .a0{background:#d9392b}.amp .a1{background:#e8c21a}.amp .a2{background:#2eb872}
+td.mid{background:#6b5c14}
+</style>
+</head>
+<body>
+<div id="app">Lade …</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+/* ============ HIER DEINE FIREBASE-DATEN EINTRAGEN (siehe Anleitung) ============ */
+const firebaseConfig = {
+  apiKey: "DEIN_API_KEY",
+  authDomain: "DEIN_PROJEKT.firebaseapp.com",
+  databaseURL: "https://DEIN_PROJEKT-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "DEIN_PROJEKT",
+  appId: "DEINE_APP_ID"
+};
+/* =============================================================================== */
+
+const SRC = '<!DOCTYPE html>' + document.documentElement.outerHTML; // für den Demo-Launcher
+const ROUNDS = [
+  {t:'Fragerunde 1', type:'q', label:'Frage'},
+  {t:'Bilderrunde',  type:'q', label:'Bild'},
+  {t:'Fragerunde 2', type:'q', label:'Frage'},
+  {t:'Liederunde',   type:'s', label:'Lied'}
+];
+const N = 10;
+
+const params = new URLSearchParams(location.search);
+const G = (params.get('g') || 'weihnachten').replace(/[^a-zA-Z0-9_-]/g,'');
+const FRAME = window.name || '';
+const IS_HOST = params.has('host') || FRAME === 'demo-host';
+const configured = firebaseConfig.apiKey !== 'DEIN_API_KEY';
+const DEMO = !configured || params.has('demo');
+const LAUNCHER = DEMO && !IS_HOST && !params.has('play') && !FRAME.startsWith('demo-');
+const baseUrl = location.origin + location.pathname;
+const playerUrl = baseUrl + '?g=' + G;
+const $app = document.getElementById('app');
+
+/* ---------- sicherer Speicher (auch wenn localStorage gesperrt ist) ---------- */
+const mem = {};
+const LS = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return mem[k] ?? null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ mem[k]=v; } },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){ delete mem[k]; } }
+};
+
+/* ---------- Datenbank: Firebase oder lokaler Demo-Modus ---------- */
+function makeLocalDB(){
+  let S = null;
+  if(FRAME.startsWith('demo-')){ try{ S = window.parent.__Q; }catch(e){} }
+  const persist = !S;
+  if(!S){
+    let data = {};
+    if(persist){ try{ data = JSON.parse(LS.get('quizdemo')||'{}'); }catch(e){} }
+    S = {data, ls:[]};
+    if(LAUNCHER) window.__Q = S;
+  }
+  const split = p => p.split('/').filter(Boolean);
+  const getAt = p => { let o=S.data; for(const k of split(p)){ if(o==null||typeof o!=='object') return null; o=o[k]; } return o===undefined?null:o; };
+  const clone = v => v==null ? null : JSON.parse(JSON.stringify(v));
+  function setAt(p,v){
+    const ks = split(p); if(!ks.length){ S.data = v||{}; return; }
+    let o=S.data;
+    for(let i=0;i<ks.length-1;i++){ if(o[ks[i]]==null||typeof o[ks[i]]!=='object') o[ks[i]]={}; o=o[ks[i]]; }
+    if(v==null) delete o[ks[ks.length-1]]; else o[ks[ks.length-1]]=v;
+  }
+  let pending=false;
+  function notify(){
+    if(persist) LS.set('quizdemo', JSON.stringify(S.data));
+    if(pending) return; pending=true;
+    setTimeout(()=>{ pending=false; S.ls.forEach(l=>l.cb({val:()=>clone(getAt(l.path))})); },0);
+  }
+  if(persist) window.addEventListener('storage', e=>{
+    if(e.key==='quizdemo'){ try{ S.data=JSON.parse(e.newValue||'{}'); }catch(_){} S.ls.forEach(l=>l.cb({val:()=>clone(getAt(l.path))})); }
+  });
+  function ref(path){
+    const api = {
+      key: split(path).pop(),
+      child: p => ref(path ? path+'/'+p : p),
+      set: v => { setAt(path, clone(v)); notify(); return Promise.resolve(); },
+      update: o => { for(const k in o) setAt(path ? path+'/'+k : k, clone(o[k])); notify(); return Promise.resolve(); },
+      push: v => { const r = api.child('-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)); if(v!==undefined) r.set(v); return r; },
+      remove: () => api.set(null),
+      on: (ev,cb) => { S.ls.push({path,cb}); cb({val:()=>clone(getAt(path))}); }
+    };
+    return api;
+  }
+  return {ref};
+}
+
+let base, dbError = null;
+if(DEMO){
+  base = makeLocalDB().ref('games/'+G);
+} else if(typeof firebase === 'undefined'){
+  dbError = 'Die Firebase-Bibliothek konnte nicht geladen werden (Internet / Firmen-Proxy?).';
+} else {
+  try{ firebase.initializeApp(firebaseConfig); base = firebase.database().ref('games/'+G); }
+  catch(e){ dbError = 'Firebase-Fehler: '+e.message; }
+}
+
+let D = null, lastKey = null, setupOpen = false, loaded = false;
+const TKEY = 'team_'+G+(FRAME?'_'+FRAME:'');
+let myId = LS.get(TKEY);
+
+/* ---------- Hilfsfunktionen ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const st = () => (D && D.state) || {phase:'lobby', round:0, reveal:0};
+const teams = () => (D && D.teams) || {};
+function fields(r){
+  const out = [];
+  for(let i=1;i<=N;i++){
+    if(ROUNDS[r-1].type==='s'){
+      out.push({k:'k'+i+'a', i, label:i+' Interpret', pts:1});
+      out.push({k:'k'+i+'t', i, label:i+' Titel', pts:1});
+    } else out.push({k:'k'+i, i, label:String(i), pts:2});
+  }
+  return out;
+}
+function norm(s){
+  return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/&/g,' and ').replace(/[^a-z0-9 ]/g,' ').replace(/\b(the|der|die|das|ein|eine|a|an)\b/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+function lev(a,b){
+  const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  let p=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){ const c=[i]; for(let j=1;j<=n;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1)); p=c; }
+  return p[n];
+}
+function matches(ans, keyStr){
+  const a = norm(ans); if(!a || !keyStr) return false;
+  return keyStr.split(';').some(alt=>{
+    const k = norm(alt); if(!k) return false;
+    if(a===k) return true;
+    const tol = k.length>=12 ? 2 : (k.length>=5 ? 1 : 0);
+    return lev(a,k) <= tol;
+  });
+}
+const getKeys = () => { try{ return JSON.parse(LS.get('quizkey_'+G) || '{}'); }catch(e){ return {}; } };
+const saveKeys = o => LS.set('quizkey_'+G, JSON.stringify(o));
+
+function teamPoints(id, r){
+  const s = D && D.scores && D.scores[r] && D.scores[r][id];
+  return s ? Object.values(s).reduce((a,b)=>a+(+b||0),0) : 0;
+}
+const BONUS_PTS = 2;
+function ranking(upTo, withBonus){
+  const bid = D && D.bonus;
+  const list = Object.entries(teams()).map(([id,t])=>{
+    const per = [1,2,3,4].map(r => r<=upTo ? teamPoints(id,r) : 0);
+    const bonus = (withBonus && bid===id) ? BONUS_PTS : 0;
+    return {id, name:t.name, per, bonus, total: per.reduce((a,b)=>a+b,0)+bonus};
+  }).sort((a,b)=>b.total-a.total || a.name.localeCompare(b.name));
+  let rank=0;
+  list.forEach((x,i)=>{ if(i===0 || x.total!==list[i-1].total) rank=i+1; x.rank=rank; });
+  return list;
+}
+function rankTable(upTo, meId, withBonus){
+  const rows = ranking(upTo, withBonus);
+  let h = '<table><tr><th>Platz</th><th>Gruppe</th>';
+  for(let r=1;r<=upTo;r++) h += `<th>R${r}</th>`;
+  if(withBonus) h += '<th>Bonus</th>';
+  h += '<th>Gesamt</th></tr>';
+  rows.forEach((x,i)=>{
+    // Animation: von unten nach oben einblenden, Platz 1 zuletzt
+    const d = ((rows.length-1-i)*0.35).toFixed(2);
+    h += `<tr class="anim ${x.id===meId?'me':''}" style="--d:${d}s"><td>${x.rank}.</td><td>${esc(x.name)}</td>`;
+    for(let r=1;r<=upTo;r++) h += `<td>${x.per[r-1]}</td>`;
+    if(withBonus) h += `<td>${x.bonus?'🎅 +'+x.bonus:'–'}</td>`;
+    h += `<td><b>${x.total}</b></td></tr>`;
+  });
+  return h + '</table>';
+}
+function stepper(cur, phase){
+  return '<div class="steps">'+ROUNDS.map((R,i)=>{
+    const n=i+1, c = n<cur ? 'past' : n===cur ? 'now' : '';
+    return `<div class="step ${c}">${R.t}${n===cur?'<small>'+({round:'läuft',eval:'Auswertung',ranking:'Ranking',bonus:'Bonus',final:''}[phase]||'')+'</small>':''}</div>`;
+  }).join('')+'</div>';
+}
+function qrHtml(url){
+  if(typeof qrcode==='undefined') return `<p class="err">QR-Bibliothek nicht geladen – bitte Internetverbindung prüfen.</p>`;
+  const q = qrcode(0,'M'); q.addData(url); q.make();
+  return `<div class="qr center">${q.createImgTag(8,4)}</div>`;
+}
+function confetti(){
+  const e=['🎉','🎄','⭐','🎁','❄️','✨']; let h='<div class="confetti">';
+  for(let i=0;i<45;i++) h+=`<span style="left:${Math.random()*100}%;animation-duration:${(3+Math.random()*3).toFixed(1)}s;animation-delay:${(Math.random()*2).toFixed(1)}s">${e[i%e.length]}</span>`;
+  return h+'</div>';
+}
+
+/* ---------- Datenänderungen ---------- */
+const setState = o => base.child('state').update(o);
+
+/* ================= SPIELER ================= */
+window.joinTeam = function(){
+  const name = document.getElementById('tn').value.trim();
+  if(!name) return alert('Bitte einen Gruppennamen eingeben.');
+  const ex = Object.entries(teams()).find(([id,t])=>t.name.toLowerCase()===name.toLowerCase());
+  if(ex){
+    if(!confirm('Diese Gruppe gibt es schon. Wieder einsteigen? (Bisherige Antworten bleiben erhalten.)')) return;
+    return rejoin(ex[0]);
+  }
+  const ref = base.child('teams').push({name, joined: Date.now()});
+  myId = ref.key; LS.set(TKEY, myId); lastKey=null;
+};
+window.rejoin = function(id){ myId=id; LS.set(TKEY,id); lastKey=null; render(); };
+window.leaveTeam = function(){ if(confirm('Dieses Handy von der Gruppe abmelden? (Antworten bleiben gespeichert, du kannst wieder einsteigen.)')){ LS.del(TKEY); myId=null; lastKey=null; render(); } };
+window.saveAns = function(r,k,v){ if(myId) base.child('answers/'+r+'/'+myId+'/'+k).set(v); };
+window.finishRound = function(r){
+  if(!confirm('Runde wirklich beenden? Danach sind keine Änderungen mehr möglich.')) return;
+  base.child('teams/'+myId+'/done/r'+r).set(true);
+};
+
+function renderPlayer(){
+  const s = st(), t = teams()[myId];
+  if(myId && !t){ LS.del(TKEY); myId=null; }
+  let key, html;
+  const T = teams(), ids = Object.keys(T);
+  if(!myId){
+    key='join'+ids.length;
+    html = `<h1>🎄 Weihnachts-Pubquiz</h1><div class="card"><h3>Neue Gruppe anmelden</h3>
+      <input id="tn" type="text" maxlength="30" placeholder="Gruppenname"><br><br>
+      <button onclick="joinTeam()">Beitreten</button></div>`;
+    if(ids.length) html += `<div class="card"><h3>Verbindung verloren? Wieder einsteigen:</h3>${ids.map(i=>`<button class="sec" onclick="rejoin('${i}')">${esc(T[i].name)}</button>`).join('')}</div>`;
+  } else if(s.phase==='lobby'){
+    key='lobby';
+    html = `<h1>🎄 Hallo ${esc(t.name)}!</h1><div class="card center"><p>Du bist dabei. Warte, bis das Quiz startet …</p></div><button class="sec" onclick="leaveTeam()">Abmelden</button>`;
+  } else if(s.phase==='round'){
+    const r = s.round, done = t.done && t.done['r'+r];
+    key = 'round'+r+(done?'d':'');
+    if(done){
+      html = `<h1>${ROUNDS[r-1].t}</h1><div class="card center"><p>✅ Antworten abgegeben.<br>Warte auf die Auswertung …</p></div>`;
+    } else {
+      const mine = (D.answers && D.answers[r] && D.answers[r][myId]) || {};
+      html = `<h1>${ROUNDS[r-1].t}</h1><small>Gruppe: ${esc(t.name)} · Antworten werden automatisch gespeichert.</small>`;
+      fields(r).forEach(f=>{
+        html += `<div class="row"><label>${esc(f.label)}</label><input type="text" value="${esc(mine[f.k]||'')}"
+          oninput="saveAns(${r},'${f.k}',this.value)" autocomplete="off"></div>`;
+      });
+      html += `<button onclick="finishRound(${r})">Runde beenden</button>`;
+    }
+  } else if(s.phase==='eval' || (s.phase==='ranking' && !s.shared)){
+    key='eval'+s.round;
+    html = `<h1>${ROUNDS[s.round-1].t}</h1><div class="card center"><p>Die Quizmasterin wertet gerade aus … 📝</p></div>`;
+  } else if(s.phase==='ranking'){
+    key='rank'+s.round;
+    html = `<h1>Zwischenstand nach ${ROUNDS[s.round-1].t}</h1><div class="card">${rankTable(s.round,myId)}</div>`;
+  } else if(s.phase==='bonus'){
+    const bt = s.bonusShared && D.bonus && teams()[D.bonus];
+    key='bonus'+(bt?D.bonus:'');
+    html = bt
+      ? `<h1>🎅 Bester Gruppenname</h1><div class="card center"><p>Der Bonus (+${BONUS_PTS} Punkte) geht an:</p><div class="big pod new">${esc(bt.name)}</div>${D.bonus===myId?'<p>🎉 Das seid ihr!</p>':''}<p><small>Das Gesamtergebnis folgt gleich …</small></p></div>`
+      : `<h1>${ROUNDS[3].t}</h1><div class="card center"><p>Die Quizmasterin wertet gerade aus … 📝</p></div>`;
+  } else {
+    key='final'+s.reveal;
+    html = `<h1>🏆 Quiz beendet</h1>` + finalHtml(myId);
+  }
+  if(key!==lastKey){
+    // Eingabe im Beitrittsfeld erhalten, falls neu gezeichnet wird
+    const old = document.getElementById('tn'); const keep = old ? old.value : '';
+    lastKey=key; $app.innerHTML=html;
+    const nw = document.getElementById('tn'); if(nw && keep){ nw.value = keep; nw.focus(); }
+    else window.scrollTo(0,0);
+  }
+}
+
+function finalHtml(meId){
+  const s = st(), rk = ranking(4, true);
+  // Anordnung klassisch: 2 | 1 | 3. Enthüllung: erst Platz 3, dann 2, dann 1.
+  const slots = [{idx:1,rev:2,c:'p2'},{idx:0,rev:3,c:'p1'},{idx:2,rev:1,c:'p3'}];
+  const medal = ['🥇','🥈','🥉'];
+  let h = '<div class="podium">';
+  slots.forEach(({idx,rev,c})=>{
+    if(s.reveal>=rev && rk[idx]){
+      h += `<div class="pod ${c}${s.reveal===rev?' new':''}"><div class="n">${medal[idx]}</div><div>Platz ${rk[idx].rank}</div><div class="t">${esc(rk[idx].name)}</div><div>${rk[idx].total} Punkte</div></div>`;
+    } else h += `<div class="pod ghost ${c}"><div class="n">?</div></div>`;
+  });
+  h += '</div>';
+  if(s.reveal>=3) h += (s.reveal===3 ? confetti() : '') + `<div class="card">${rankTable(4,meId,true)}</div>`;
+  return h;
+}
+
+/* ================= QUIZMASTER ================= */
+window.hStart = r => setState({phase:'round', round:r, reveal:0, shared:false, bonusShared:false});
+window.hToggleDone = function(id){
+  const r = st().round, cur = teams()[id].done && teams()[id].done['r'+r];
+  base.child('teams/'+id+'/done/r'+r).set(cur ? null : true);
+};
+window.hToEval = function(){ const r = st().round; evalInit(r); setState({phase:'eval'}); };
+window.hTogglePts = function(r,id,k,pts){
+  const cur = D.scores && D.scores[r] && D.scores[r][id] && D.scores[r][id][k];
+  base.child('scores/'+r+'/'+id+'/'+k).set(cur>0 ? 0 : pts);
+};
+window.hSetPts = function(r,id,k,v){ base.child('scores/'+r+'/'+id+'/'+k).set(v); };
+window.hFinishEval = () => { if(st().round===4) setState({phase:'bonus', bonusShared:false, shared:false}); else setState({phase:'ranking', shared:false}); };
+window.hShareBonus = () => { if(D.bonus) setState({bonusShared:true}); };
+window.hShare = () => setState({shared:true});
+window.hBackToEval = () => { if(confirm('Zurück zur Auswertung? Ranking bzw. Bonus-Entscheidung werden auf den Handys wieder ausgeblendet.')) setState({phase:'eval', shared:false, bonusShared:false}); };
+window.hPickBonus = function(id){ base.child('bonus').set(D.bonus===id ? null : id); };
+window.hFinal = () => setState({phase:'final', reveal:0});
+window.hReveal = () => setState({reveal: Math.min(3, st().reveal+1)});
+window.hReset = function(){
+  if(confirm('Wirklich ALLES zurücksetzen (Gruppen, Antworten, Punkte)?')){ base.remove().then(()=>{ lastKey=null; }); }
+};
+window.hOpenSetup = ()=>{ setupOpen=true; lastKey=null; render(); };
+window.hCloseSetup = ()=>{ setupOpen=false; lastKey=null; render(); };
+window.hSaveKey = function(r,k,v){ const o=getKeys(); (o[r]=o[r]||{})[k]=v; saveKeys(o); };
+window.hKick = id => { if(confirm('Gruppe entfernen?')) base.child('teams/'+id).remove(); };
+
+function evalInit(r){
+  const keys = (getKeys()[r]) || {}, upd = {};
+  Object.keys(teams()).forEach(id=>{
+    fields(r).forEach(f=>{
+      const already = D.scores && D.scores[r] && D.scores[r][id] && D.scores[r][id][f.k] !== undefined;
+      if(already) return;
+      const ans = D.answers && D.answers[r] && D.answers[r][id] && D.answers[r][id][f.k];
+      upd[r+'/'+id+'/'+f.k] = matches(ans, keys[f.k]) ? f.pts : 0;
+    });
+  });
+  if(Object.keys(upd).length) base.child('scores').update(upd);
+}
+
+function renderHost(){
+  const s = st(), T = teams(), ids = Object.keys(T);
+  if(!D.state){ setState({phase:'lobby', round:0, reveal:0}); return; }
+  if(setupOpen){ if(lastKey==='setup') return; lastKey='setup'; return renderSetup(); }
+  const hk = s.phase==='ranking' ? 'rk'+s.round+'-'+ids.length+'-'+(s.shared?1:0) : s.phase==='final' ? 'fin'+s.reveal : null;
+  if(hk && hk===lastKey) return;
+  lastKey = hk;
+  const tw = document.getElementById('tw'), sl = tw ? tw.scrollLeft : 0, stp = tw ? tw.scrollTop : 0;
+  let h = `<h1>🎄 Quizmaster</h1>`;
+  if(DEMO) h += `<div class="demo">Demo-Modus (lokal, ohne Firebase)</div>`;
+  if(s.phase!=='lobby' && s.phase!=='final') h += stepper(s.round, s.phase);
+  if(s.phase==='lobby'){
+    h += `<div class="card center"><h2>Scannt den QR-Code zum Beitreten</h2>${qrHtml(playerUrl)}<p><small>${esc(playerUrl)}</small></p></div>
+      <div class="card"><h3>Angemeldete Gruppen (${ids.length})</h3>${ids.map(i=>`<span class="pill">${esc(T[i].name)} <a href="#" onclick="hKick('${i}');return false" style="color:#fff">✕</a></span>`).join('')||'<i>noch keine</i>'}</div>
+      <button class="sec" onclick="hOpenSetup()">⚙️ Musterlösungen eintragen</button>
+      <button onclick="hStart(1)" ${ids.length?'':'disabled'}>▶ ${ROUNDS[0].t} starten</button>`;
+  } else if(s.phase==='round'){
+    const r=s.round, doneN = ids.filter(i=>T[i].done&&T[i].done['r'+r]).length, R=ROUNDS[r-1];
+    h += `<div class="card"><h2>${R.t} läuft</h2>
+      <p>Fertig: <b>${doneN} / ${ids.length}</b> <small>(Klick auf eine Gruppe schaltet „fertig“ um)</small></p>
+      ${ids.map(i=>`<span class="pill ${T[i].done&&T[i].done['r'+r]?'done':''}" style="cursor:pointer" onclick="hToggleDone('${i}')">${esc(T[i].name)}</span>`).join('')}</div>
+      <button onclick="hToEval()" ${doneN===ids.length&&ids.length?'':'class="sec"'}>Runde schließen & Auswertung öffnen</button>`;
+  } else if(s.phase==='eval'){
+    const r=s.round, keys=getKeys()[r]||{}, F=fields(r);
+    h += `<h2>Auswertung: ${ROUNDS[r-1].t}</h2><small>Ampel: 🔴 0 · 🟡 1 · 🟢 2 Punkte (Fragen/Bilder). Liederunde: Zelle anklicken = 1 Punkt für Interpret bzw. Titel. Vorschläge kommen aus den Musterlösungen.</small>
+      <div id="tw" style="overflow-x:auto"><table><tr><th>#</th><th>Lösung</th>${ids.map(i=>`<th>${esc(T[i].name)}</th>`).join('')}</tr>`;
+    F.forEach(f=>{
+      h += `<tr><td>${esc(f.label)}</td><td class="key">${esc(keys[f.k]||'–')}</td>`;
+      ids.forEach(i=>{
+        const ans = D.answers&&D.answers[r]&&D.answers[r][i]&&D.answers[r][i][f.k];
+        const p = D.scores&&D.scores[r]&&D.scores[r][i]&&D.scores[r][i][f.k];
+        if(ROUNDS[r-1].type==='s'){
+          const cls = !ans ? 'none' : (p>0?'good':'bad');
+          h += `<td class="c ${cls}" onclick="hTogglePts(${r},'${i}','${f.k}',${f.pts})">${esc(ans||'—')}</td>`;
+        } else {
+          const pv = +p||0;
+          const cls = pv===2 ? 'good' : pv===1 ? 'mid' : (!ans ? 'none' : 'bad');
+          h += `<td class="${cls}"><div>${esc(ans||'—')}</div><div class="amp">`
+            + [0,1,2].map(v=>`<span class="a${v}${pv===v?' on':''}" title="${v} Punkt(e)" onclick="hSetPts(${r},'${i}','${f.k}',${v})"></span>`).join('')
+            + `</div></td>`;
+        }
+      });
+      h += '</tr>';
+    });
+    h += `<tr><th colspan="2">Rundenpunkte</th>${ids.map(i=>`<th>${teamPoints(i,r)}</th>`).join('')}</tr></table></div>
+      <button onclick="hFinishEval()">${r===4 ? 'Auswertung abschließen → Bonus „Bester Gruppenname“' : 'Auswertung abschließen → Ranking zeigen'}</button>`;
+  } else if(s.phase==='ranking'){
+    const r=s.round;
+    h += s.shared
+      ? `<div class="demo" style="background:#1f6b45">✅ Ergebnis ist für die Gruppen sichtbar.</div>`
+      : `<div class="demo">🔒 Nur für dich sichtbar – die Gruppen sehen noch „Auswertung läuft“.</div><button onclick="hShare()">📢 Ergebnis mit Gruppen teilen</button>`;
+    h += `<button class="sec" onclick="hBackToEval()">↩ Zurück zur Auswertung</button>`;
+    h += `<h2>Zwischenstand nach ${ROUNDS[r-1].t}</h2><div class="card">${rankTable(r)}</div>`;
+    if(s.shared && r<4) h += `<button onclick="hStart(${r+1})">▶ ${ROUNDS[r].t} starten</button>`;
+  } else if(s.phase==='bonus'){
+    h += `<h2>🎅 Bonus: Bester Gruppenname (+${BONUS_PTS} Punkte)</h2>
+      <div class="demo">${s.bonusShared ? '✅ Entscheidung ist für die Gruppen sichtbar. Das Ergebnis der Liederunde ist noch verborgen.' : '🔒 Nur für dich sichtbar – die Gruppen sehen noch „Auswertung läuft“. Das Ergebnis der Liederunde wird erst im Finale gezeigt.'}</div>
+      ${s.bonusShared ? '' : `<small>Gruppe anklicken, die den Bonus erhält. Erneut klicken = Auswahl aufheben.</small>
+      <div class="card">${ids.map(i=>`<button class="${D.bonus===i?'':'sec'}" onclick="hPickBonus('${i}')">${D.bonus===i?'🎅 ':''}${esc(T[i].name)}</button>`).join('')}</div>`}
+      ${s.bonusShared ? `<div class="card center"><h2>🎅 ${esc((T[D.bonus]||{}).name||'')}</h2></div><button onclick="hFinal()">🏁 Quiz beenden & Finale</button>`
+        : `<button class="sec" onclick="hBackToEval()">↩ Zurück zur Auswertung</button>
+      <button onclick="hShareBonus()" ${D.bonus?'':'disabled'}>📢 Entscheidung mit Gruppen teilen</button>`}`;
+  } else {
+    h += finalHtml(null);
+    h += s.reveal<3 ? `<div class="center"><button onclick="hReveal()">${['Platz 3 enthüllen','Platz 2 enthüllen','Platz 1 enthüllen'][s.reveal]}</button></div>` : '';
+  }
+  h += `<hr><button class="danger" onclick="hReset()">Quiz zurücksetzen</button>`;
+  $app.innerHTML = h;
+  const nt = document.getElementById('tw'); if(nt){ nt.scrollLeft=sl; nt.scrollTop=stp; }
+}
+
+function renderSetup(){
+  const keys = getKeys();
+  let h = `<h1>⚙️ Musterlösungen</h1><small>Alternativen mit Semikolon trennen, z. B. <i>Paris; Stadt der Liebe</i>. Wird nur in diesem Browser gespeichert (nicht in der Datenbank).</small>`;
+  ROUNDS.forEach((R,i)=>{
+    const r=i+1;
+    h += `<div class="card"><h3>${R.t}</h3>`;
+    fields(r).forEach(f=>{
+      h += `<div class="row"><label>${esc(f.label)}</label><input type="text" value="${esc((keys[r]||{})[f.k]||'')}" oninput="hSaveKey(${r},'${f.k}',this.value)"></div>`;
+    });
+    h += '</div>';
+  });
+  h += `<button onclick="hCloseSetup()">Fertig</button>`;
+  $app.innerHTML = h; window.scrollTo(0,0);
+}
+
+/* ---------- Demo-Launcher: Host + 3 Spieler nebeneinander ---------- */
+function renderLauncher(){
+  $app.innerHTML = `<div class="tabs"><button id="b0" onclick="showView('host')">🎤 Quizmasteransicht</button>
+    <button id="b1" class="sec" onclick="showView('groups')">👥 Gruppenansicht</button>
+    <small>&nbsp;Demo-Modus: läuft lokal ohne Firebase</small></div>
+    <div id="vhost" class="dhost"><iframe name="demo-host" id="f0"></iframe></div>
+    <div id="vgroups" class="dgrid" style="display:none"><iframe name="demo-p1" id="f1"></iframe><iframe name="demo-p2" id="f2"></iframe><iframe name="demo-p3" id="f3"></iframe></div>`;
+  ['f0','f1','f2','f3'].forEach(id=>{ document.getElementById(id).srcdoc = SRC; });
+}
+function fitFrames(){
+  document.querySelectorAll('iframe').forEach(f=>{
+    try{ const d=f.contentDocument; if(!d||!d.body) return;
+      const h=Math.max(d.documentElement.scrollHeight, d.body.scrollHeight);
+      if(h>100 && Math.abs(f.offsetHeight-h)>4 && f.offsetParent) f.style.height=(h+10)+'px';
+    }catch(e){}
+  });
+}
+setInterval(()=>{ if(LAUNCHER) fitFrames(); }, 300);
+window.showView = function(v){
+  document.getElementById('vhost').style.display = v==='host' ? '' : 'none';
+  document.getElementById('vgroups').style.display = v==='groups' ? '' : 'none';
+  document.getElementById('b0').className = v==='host' ? '' : 'sec';
+  document.getElementById('b1').className = v==='groups' ? '' : 'sec';
+};
+
+/* ---------- Render-Loop ---------- */
+function render(){
+  if(!D) D = {};
+  IS_HOST ? renderHost() : renderPlayer();
+}
+if(LAUNCHER){
+  renderLauncher();
+} else if(dbError){
+  $app.innerHTML = `<div class="err"><b>Verbindungsproblem</b><br>${esc(dbError)}</div>`;
+} else {
+  setTimeout(()=>{ if(!loaded) $app.innerHTML = `<div class="err"><b>Keine Verbindung zur Datenbank.</b><br>Bitte prüfen: Internet, Firebase-Config in index.html, Datenbank-URL (databaseURL) und die Regeln.</div>`; }, 8000);
+  base.on('value', snap => { loaded = true; D = snap.val() || {}; render(); });
+}
+</script>
+</body>
+</html>
